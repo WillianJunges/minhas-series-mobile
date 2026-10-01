@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { FlatList, Pressable, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getSeries } from '../src/database/serieRepository';
 import type { Serie, SerieFilter } from '../src/types/serie';
 
@@ -13,6 +14,8 @@ const FILTROS: { valor: SerieFilter; rotulo: string }[] = [
 export default function Home() {
   const [filtro, setFiltro] = useState<SerieFilter>('todas');
   const [series, setSeries] = useState<Serie[]>([]);
+  // Altura da barra de navegação do Android (voltar/home/recentes), que varia por aparelho.
+  const insets = useSafeAreaInsets();
 
   // Recarrega ao focar a tela (ex.: voltando do /form) e quando o filtro muda.
   useFocusEffect(
@@ -45,7 +48,8 @@ export default function Home() {
       <FlatList
         data={series}
         keyExtractor={(item) => String(item.id)}
-        contentContainerClassName="gap-3 pb-24"
+        contentContainerClassName="gap-3"
+        contentContainerStyle={{ paddingBottom: insets.bottom + 96 }}
         ListEmptyComponent={
           <Text className="mt-16 text-center text-neutral-500">Nenhuma série encontrada.</Text>
         }
@@ -82,7 +86,8 @@ export default function Home() {
 
       <Pressable
         onPress={() => router.push('/form')}
-        className="absolute bottom-6 left-4 right-4 items-center rounded-lg bg-red-600 py-4 active:bg-red-700"
+        style={{ bottom: insets.bottom + 16 }}
+        className="absolute left-4 right-4 items-center rounded-lg bg-red-600 py-4 active:bg-red-700"
       >
         <Text className="text-base font-bold text-white">+ Nova série</Text>
       </Pressable>
