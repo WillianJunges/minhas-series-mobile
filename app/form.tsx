@@ -61,30 +61,35 @@ export default function Form() {
 
   return (
     <View className="flex-1 bg-black p-4">
+      <Text className="mb-1 text-sm font-semibold text-neutral-300">Título</Text>
       <TextInput
         value={titulo}
         onChangeText={setTitulo}
-        placeholder="Título"
+        placeholder="Ex.: F.R.I.E.N.D.S"
         placeholderTextColor="#737373"
-        className="mb-3 rounded-lg bg-neutral-900 px-4 py-3 text-white"
+        className="mb-4 rounded-lg bg-neutral-900 px-4 py-3 text-white"
       />
+      <Text className="mb-1 text-sm font-semibold text-neutral-300">Plataforma</Text>
       <TextInput
         value={plataforma}
         onChangeText={setPlataforma}
-        placeholder="Plataforma"
+        placeholder="Ex.: Netflix, Max, Prime Video"
         placeholderTextColor="#737373"
-        className="mb-3 rounded-lg bg-neutral-900 px-4 py-3 text-white"
+        className="mb-4 rounded-lg bg-neutral-900 px-4 py-3 text-white"
       />
+      <Text className="mb-1 text-sm font-semibold text-neutral-300">Temporadas assistidas</Text>
       <TextInput
         value={temporadas}
         onChangeText={setTemporadas}
-        placeholder="Temporadas assistidas"
+        placeholder="Ex.: 3"
         placeholderTextColor="#737373"
         keyboardType="numeric"
-        className="mb-3 rounded-lg bg-neutral-900 px-4 py-3 text-white"
+        className="mb-4 rounded-lg bg-neutral-900 px-4 py-3 text-white"
       />
 
-      <Text className="mb-2 mt-2 text-neutral-400">Nota</Text>
+      <Text className="mb-1 text-sm font-semibold text-neutral-300">
+        Nota <Text className="font-normal text-neutral-500">(opcional, toque de novo para tirar)</Text>
+      </Text>
       <View className="mb-6 flex-row gap-2">
         {ESTRELAS.map((n) => {
           const cheia = nota !== null && n <= nota;
