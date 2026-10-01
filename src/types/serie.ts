@@ -20,3 +20,12 @@ export type CreateSerieInput = Omit<Serie, 'id' | 'createdAt' | 'concluida'>;
 export type UpdateSerieInput = Pick<Serie, 'titulo' | 'plataforma' | 'temporadas' | 'nota'>;
 
 export type SerieFilter = 'todas' | 'assistindo' | 'concluidas';
+
+/** Ordenação da lista: mais recentes, maior nota ou ordem alfabética (A-Z). */
+export type SerieOrdem = 'recentes' | 'nota' | 'alfabetica';
+
+/** Totais mostrados no contador do topo da lista. */
+export type SerieContagem = {
+  total: number;
+  concluidas: number;
+};

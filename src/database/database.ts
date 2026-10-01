@@ -1,4 +1,5 @@
 import * as SQLite from 'expo-sqlite';
+import { montarTextoBusca } from '../utils/texto';
 
 const DATABASE_NAME = 'minhas-series.db';
 
@@ -37,4 +38,23 @@ export async function runMigrations(): Promise<void> {
       createdAt  TEXT    NOT NULL
     );
   `);
+
+  // Migração 2: coluna de busca sem acento (título + plataforma).
+  // O CREATE TABLE IF NOT EXISTS não altera uma tabela que já existe,
+  // então a coluna é adicionada com ALTER TABLE, só se ainda não existir.
+  const colunas = await db.getAllAsync<{ name: string }>('PRAGMA table_info(series)');
+  if (!colunas.some((coluna) => coluna.name === 'textoBusca')) {
+    await db.execAsync("ALTER TABLE series ADD COLUMN textoBusca TEXT NOT NULL DEFAULT ''");
+  }
+
+  // Preenche a coluna nas séries que já existiam antes dela.
+  const pendentes = await db.getAllAsync<{ id: number; titulo: string; plataforma: string }>(
+    "SELECT id, titulo, plataforma FROM series WHERE textoBusca = ''",
+  );
+  for (const serie of pendentes) {
+    await db.runAsync('UPDATE series SET textoBusca = ? WHERE id = ?', [
+      montarTextoBusca(serie.titulo, serie.plataforma),
+      serie.id,
+    ]);
+  }
 }

@@ -31,8 +31,9 @@ app/
 src/
 ├── types/serie.ts              # Serie, CreateSerieInput, UpdateSerieInput, SerieFilter
 └── database/
-    ├── database.ts             # Conexão (singleton) e criação da tabela
-    └── serieRepository.ts      # As 6 funções de acesso ao banco (todas com "?")
+    ├── database.ts             # Conexão (singleton), criação da tabela e migrações
+    └── serieRepository.ts      # Funções de acesso ao banco (todas com "?")
+src/utils/texto.ts              # Tira acentos para a busca (extra)
 ```
 
 As telas nunca escrevem SQL: elas chamam o repositório, que chama a conexão.
@@ -62,6 +63,25 @@ As telas nunca escrevem SQL: elas chamam o repositório, que chama a conexão.
 | <img src="telas/3-lista-todas.jpeg" width="250"> | <img src="telas/9-reaberto.jpeg" width="250"> |
 
 Depois de reabrir, as 3 séries continuaram lá, com o status, a nota e a edição salvos, e os filtros "Assistindo" e "Concluídas" seguiram funcionando (prints 4 e 5 acima). Os dados estão no SQLite do celular, não na memória do app.
+
+## Extras (depois da entrega)
+
+Melhorias feitas a partir da seção "Para ir além" do enunciado e de algumas ideias minhas. Todas as buscas, filtros e ordenações são resolvidos **no SQL**, sempre com `?`.
+
+- **Contador no topo:** "5 séries · 3 concluídas", calculado com `COUNT` no SQL.
+- **Ordenação alternável:** um botão alterna entre 🕒 mais recentes, ★ maior nota (séries sem nota vão para o fim) e 🔤 A-Z.
+- **Busca por título ou plataforma:** com `LIKE ?`, e o `%` entra no **valor**, não na query. Ignora maiúsculas e **acentos** ("agape" acha "Ágape").
+- **Filtro por plataforma:** botões com as plataformas já cadastradas, que funcionam junto com o filtro de status e a busca.
+
+| Mais recentes | Maior nota | A-Z |
+| :-: | :-: | :-: |
+| <img src="telas/10-ordem-recentes.jpg" width="220"> | <img src="telas/11-ordem-nota.jpg" width="220"> | <img src="telas/12-ordem-az.jpg" width="220"> |
+
+| Filtro por plataforma (Netflix) | Busca pela plataforma ("Pirat") |
+| :-: | :-: |
+| <img src="telas/13-filtro-plataforma.jpg" width="220"> | <img src="telas/14-busca-plataforma.jpg" width="220"> |
+
+**Como a busca ignora acentos:** o SQLite não sabe comparar "a" com "á". Por isso cada série guarda uma coluna interna `textoBusca`, com título e plataforma em minúsculas e sem acento (`"Élite"` + `"Prime Video"` vira `"elite prime video"`). O texto digitado passa pela mesma limpeza antes da consulta. Essa coluna foi adicionada com uma **segunda migração** (`ALTER TABLE ... ADD COLUMN`), porque o `CREATE TABLE IF NOT EXISTS` não altera uma tabela que já existe. Assim, as séries cadastradas antes da mudança não se perderam.
 
 ## Diário do copiloto
 
