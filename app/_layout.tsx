@@ -12,5 +12,18 @@ export default function RootLayout() {
 
   if (!pronto) return null;
 
-  return <Stack />;
+    return (
+        <Stack
+            screenOptions={{
+                headerStyle: { backgroundColor: '#000' },
+                headerTintColor: '#dc2626',
+                headerTitleStyle: { color: '#fff', fontWeight: 'bold' },
+                contentStyle: { backgroundColor: '#000' },
+            }}
+        >
+            <Stack.Screen name="index" options={{ title: 'Minhas Séries' }} />
+            <Stack.Screen name="form" options={{ title: 'Série' }} />
+            <Stack.Screen name="detalhe" options={{ title: 'Detalhes' }} />
+        </Stack>
+  );
 }
